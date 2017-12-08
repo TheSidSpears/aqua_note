@@ -1,0 +1,14 @@
+/*todo Better rename to custom_easy_admin.css*/
+.main-header .logo {
+    color: #3a3a3a;
+}
+
+.markdown-preview {
+    margin-top: 10px;
+    border: 2px dashed #da3735;
+    padding: 5px;
+}
+
+.markdown-preview::before {
+    content: "Preview: ";
+}

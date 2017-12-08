@@ -46,6 +46,11 @@ class GenusNote
      */
     private $genus;
 
+    public function __toString()
+    {
+        return (string)$this->getNote();
+    }
+
     /**
      * @return mixed
      */

@@ -5,7 +5,7 @@ security:
         AppBundle\Entity\User: bcrypt
 
     role_hierarchy:
-            ROLE_ADMIN: [ROLE_MANAGE_GENUS, ROLE_ALLOWED_TO_SWITCH]
+            ROLE_ADMIN: [ROLE_MANAGE_GENUS, ROLE_ALLOWED_TO_SWITCH, ROLE_SUPERADMIN]
     # https://symfony.com/doc/current/security.html#b-configuring-how-users-are-loaded
     providers:
         our_users:
@@ -24,6 +24,7 @@ security:
                     - AppBundle\Security\LoginFormAuthenticator
             logout:
                 path: /logout
+            logout_on_user_change: true
 
             switch_user: ~
             # activate different ways to authenticate
@@ -34,4 +35,4 @@ security:
             # https://symfony.com/doc/current/security/form_login_setup.html
             #form_login: ~
     access_control:
-        #- {path: ^/admin, roles: ROLE_ADMIN}
+        - {path: ^/easyadmin, roles: ROLE_ADMIN}

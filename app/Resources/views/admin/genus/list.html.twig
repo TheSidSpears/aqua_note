@@ -1,6 +1,7 @@
 {% extends 'base.html.twig' %}
 
 {% block body %}
+    <a href="{{ path('admin_genus_new') }}" class="btn btn-s btn-primary">New</a>
     <table class="table table-striped">
         <thead>
         <tr>
@@ -13,7 +14,7 @@
         {% for genus in genuses %}
             <tr>
                 <td>
-                    <a href="{{ path('genus_show', {'genusName': genus.name}) }}">
+                    <a href="{{ path('genus_show', {'slug': genus.slug}) }}">
                         {{ genus.name }}
                     </a>
                 </td>

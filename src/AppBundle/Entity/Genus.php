@@ -1,8 +1,11 @@
 <?php
 
+
 namespace AppBundle\Entity;
 
+use AppBundle\Repository\GenusScientistRepository;
 use Doctrine\Common\Collections\ArrayCollection;
+use Gedmo\Mapping\Annotation as Gedmo;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 
@@ -24,6 +27,12 @@ class Genus
      * @ORM\Column(type="string")
      */
     private $name;
+
+    /**
+     * @ORM\Column(type="string", unique=true)
+     * @Gedmo\Slug(fields={"name"})
+     */
+    private $slug;
 
     /**
      * @Assert\NotBlank()
@@ -61,10 +70,27 @@ class Genus
      */
     private $notes;
 
+    /**
+     * @ORM\OneToMany(
+     *     targetEntity="GenusScientist",
+     *     mappedBy="genus",
+     *     fetch="EXTRA_LAZY",
+     *     orphanRemoval=true,
+     *     cascade={"persist"}
+     * )
+     * @Assert\Valid()
+     */
+    private $genusScientists;
 
     public function __construct()
     {
         $this->notes = new ArrayCollection();
+        $this->genusScientists = new ArrayCollection();
+    }
+
+    public function __toString()
+    {
+        return (string)$this->getName();
     }
 
     /**
@@ -176,5 +202,60 @@ class Genus
     public function setFirstDiscoveredAt(\DateTime $firstDiscoveredAt = null)
     {
         $this->firstDiscoveredAt = $firstDiscoveredAt;
+    }
+
+    public function getSlug()
+    {
+        return $this->slug;
+    }
+
+    public function setSlug($slug)
+    {
+        $this->slug = $slug;
+    }
+
+    public function addGenusScientist(GenusScientist $genusScientist)
+    {
+        if ($this->genusScientists->contains($genusScientist)) {
+            return;
+        }
+
+        $this->genusScientists[] = $genusScientist;
+        // needed to update the owning side of the relationship!
+        $genusScientist->setGenus($this);
+    }
+
+    public function removeGenusScientist(GenusScientist $genusScientist)
+    {
+        if (!$this->genusScientists->contains($genusScientist)) {
+            return;
+        }
+
+        $this->genusScientists->removeElement($genusScientist);
+        // needed to update the owning side of the relationship!
+        $genusScientist->setGenus(null);
+    }
+
+    /**
+     * @return ArrayCollection|GenusScientist[]
+     */
+    public function getGenusScientists()
+    {
+        return $this->genusScientists;
+    }
+
+    /**
+     * @return ArrayCollection|GenusScientist[]
+     */
+    public function getExpertScientists()
+    {
+        return $this->getGenusScientists()->matching(
+            GenusScientistRepository::createExpertCriteria()
+        );
+    }
+
+    public function feed($meal)
+    {
+        return $this->getName() . ' is feeded!';
     }
 }
