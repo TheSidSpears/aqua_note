@@ -1,0 +1,32 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    <table class="table table-striped">
+        <thead>
+        <tr>
+            <th>Genus</th>
+            <th># of species</th>
+            <th>Last updated</th>
+            <th># of scientists</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for genus in genuses %}
+            <tr>
+                <td>
+                    <a href="{{ path('genus_show', {'slug': genus.slug}) }}">
+                        {{ genus.name }}
+                    </a>
+                </td>
+                <td>{{ genus.speciesCount }}</td>
+                <td>{{ genus.updatedAt|date('Y-m-d') }}</td>
+                <td>
+                    {{ genus.genusScientists|length }}
+                    ({{ genus.expertScientists|length }} experts)
+                </td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+{% endblock %}
+
